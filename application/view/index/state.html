@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Goowalk,{$state.state_name}门户网址大全,{$state.state_name}门户网站分类导航,{$state.state_name}门户网址全收录"/>
+    <meta name="description" content="{$state.state_name}门户官网导航，{$state.state_name}门户官网全收录，{$state.state_name}门户网址大全">
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="bookmark" href="/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/list.css">
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <script src="/static/jquery-3.4.1.min.js"></script>
+    <script src="/static/layui/layui.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=1"/>
+    <title>{$state.state_name}最新网址全收录--Goowalk 国外网站大全</title>
+</head>
+<body>
+<div class="top">
+    <div class="logo">
+        <a href="/" title="Goowalk 国外网站导航">
+            <img src="/images/Logo.png" width="240" height="100" alt="国外网站导航">
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="title">
+        <div>
+            <span>当前位置：</span><a href="/" class="nochecked">首页</a>><a href="#" class="checked"><h1>{$state.state_name}</h1></a>>
+            <select name="type" lay-verify="required" style="height: 22px;" id="sel-but">
+                <option value="全部类别">全部类别</option>
+                {foreach $type as $key=>$vo }
+                <option value="{$vo.type_name}">{$vo.type_name}</option>
+                {/foreach}
+            </select>
+        </div>
+
+
+
+    </div>
+    <div class="list">
+
+        {foreach $siteState as $key=>$vo }
+
+        <div class="list-content">
+            <a href="site?name={$vo.sitename}">
+                <div class="list-more">
+                    <div class="list-img">
+                        <img src="/images/site/{$vo.img_logo}" title="">
+                    </div>
+                    <div class="list-name">
+                        <span>网站名称：</span>
+                        <h2>{$vo.sitename}</h2>
+                    </div>
+                </div>
+                <div class="list-info">
+                    <span>网站简介：</span>
+                    <h3>{$vo.info}</h3>
+                </div>
+            </a>
+        </div>
+
+        {/foreach}
+
+
+    </div>
+</div>
+<script>
+    $('#sel-but').bind('change',function () {
+        var select=$('select').children('option:selected').val()
+        var stateName=$('h1').html();
+        function getSelect(select){
+            $.ajax({
+                url: "{:url('Index/state')}",
+                dataType: 'json',
+                type: 'post',
+                data:{type:select,name:stateName},
+                success: function (data) {
+                    $('body').html(data);
+                    console.log(select);
+                    $("select option[value='"+select+"']").attr("selected", true);
+
+                }
+            });
+        }
+        getSelect(select);
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+{include file="admin/head" /}
+
+
+<div class="demoTable">
+  搜索类型：
+  <div class="layui-inline">
+    <input class="layui-input" name="searchTypeText" id="searchTypeText" autocomplete="off">
+  </div>
+  <button class="layui-btn" data-type="reload" id="searchType">搜索</button>
+  <button class="layui-btn" data-type="addState" id="addType">新增类型</button>
+</div>
+
+<div class="Table" style="margin-top: 20px;">
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item layui-inline" pane=""  style="width: 300px;">
+      <label class="layui-form-label">热门类型</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="hotSearch" lay-skin="switch" lay-text="是|否" id="hotSearch"  lay-filter="hotSearch">
+      </div>
+    </div>
+  </form>
+</div>
+
+<table class="layui-hide" id="type" lay-filter="typeData"></table>
+
+<script type="text/html" id="editBar">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="addTypeForm">
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-hide">
+      <input type="text" name="typeId" id="typeId">
+    </div>
+    <div class="layui-form-item" >
+      <label class="layui-form-label">网站类型：</label>
+      <div class="layui-input-block">
+        <input type="text" name="type" required  lay-verify="required" placeholder="请输入您要添加的网站类型" autocomplete="off" class="layui-input" id="typeName">
+      </div>
+    </div>
+    <div class="layui-form-item"  pane="">
+      <label class="layui-form-label">热门类型:</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="isHot" lay-skin="switch" lay-text="是|否" id="isHot">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formUpType" type="button" id="submit">提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+  </form>
+</script>
+
+
+<script type="text/html" id="hot">
+  {{#  if(d.ishot === 1){ }}
+  <span style="color: #F581B1;">是</span>
+  {{#  } else { }}
+  否
+  {{#  } }}
+</script>
+
+
+<script>
+  //监听新增国家事件
+  $('#addType').on('click', function() {
+    layui.use(['form','layer'], function(){
+      var form = layui.form;
+      var layer = layui.layer;
+      layer.open({
+        type: 1 //Page层类型
+        ,area: ['680px', '520px']
+        ,title: '新增国家'
+        ,shade: 0.6 //遮罩透明度
+        ,shadeClose:false
+        ,anim: 1 //0-6的动画形式，-1不开启
+        ,content: $('#addTypeForm').html()
+      });
+      form.render();
+
+      //监听提交
+      form.on('submit(formUpType)', function(data){
+        //自定义开关状态传入数据
+        if(data.field.isHot == "on")
+        {
+          data.field.isHot = "1";
+        } else {
+          data.field.isHot = "0";
+        };
+        $.ajax({
+          type:"POST",
+          url:"{:url('Api/addType')}",
+          data:data.field,
+          dataType:'json',
+          success:function (data) {
+            console.log(data);
+            if (data.status==100){
+              layer.msg(data.msg, {icon: 1},function() {
+                window.parent.location.reload();//刷新父页面
+                parent.layer.close(index);//关闭弹出层
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          }
+        });
+      });
+    });
+
+  });
+
+  layui.use(['table','form'], function(){
+    var form = layui.form;
+    var table = layui.table;
+
+    //监听搜索框事件
+    $('#searchType').on('click', function(){
+      var searchTypeText = $('#searchTypeText').val();
+      table.reload('typeReload', {
+        url: "{:url('Api/searchTypeText')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:searchTypeText
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //监听筛选区域热门类型开关
+    form.on('switch(hotSearch)', function(data){
+      //自定义开关状态传入数据
+      if(this.checked == true)
+      {
+        ishot = "1";
+      } else {
+        ishot = "0";
+      };
+      table.reload('typeReload', {
+        url: "{:url('Api/searchTypeHot')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:ishot
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //表格渲染
+    table.render({
+      elem: '#type'
+      ,url:"{:url('Api/typeTable')}"
+      ,cols: [[
+        {field:'type_id', title:'ID', sort: true}
+        ,{field:'type_name', title:'类型', sort: true,Width:200}
+        ,{field:'ishot', title:'热门', sort: true,templet:'#hot'}
+        ,{fixed: 'right', title:'操作', toolbar: '#editBar'}
+      ]]
+      ,id:'typeReload'
+      ,page: {
+        limit:10 //一页显示多少条
+        ,limits:[10,20,30]//每页条数的选择项
+        ,groups: 5 //连续页码
+        ,first: "首页"
+        ,last: "尾页"
+        ,prev:"上一页"
+        ,next:"下一页"
+      }
+    });
+
+    //编辑|删除
+    table.on('tool(typeData)', function(obj){
+      console.log(obj.data)
+      var type_id = obj.data.type_id;
+
+      //删除
+      if(obj.event === 'del'){
+        layer.confirm('真的删除么', function(index){
+          obj.del();
+          $.ajax({
+            type:"GET",
+            url:"{:url('Api/delType')}",
+            data:{type_id:type_id},
+            dataType:'json',
+            success:function (data) {
+              layer.msg('删除成功');
+            }
+          });
+          layer.close(index);
+        });
+      }
+
+
+      //编辑
+      else if(obj.event === 'edit'){
+        //打开图层
+        layer.open({
+          type: 1 //Page层类型
+          ,area: ['680px', '520px']
+          ,title: '编辑网站类型'
+          ,shade: 0.6 //遮罩透明度
+          ,shadeClose:false
+          ,anim: 1 //0-6的动画形式，-1不开启
+          ,content: $('#addTypeForm').html()
+          ,cancel: function(index){
+            layer.close(index);
+            parent.layui.table.reload('typeData');
+          }
+        });
+
+        //隐藏输入框赋值
+        $('#typeId').attr('value',obj.data.type_id);
+
+        //输入框赋值
+        $('#typeName').attr('value',obj.data.type_name);
+
+        //开关赋值
+        if (obj.data.ishot == 1){
+          $('#isHot').prop({'checked':true});
+        }
+
+        //渲染页面
+        form.render();
+
+        //提交数据
+        form.on('submit(formUpType)', function(data){
+          //自定义开关状态传入数据
+          if(data.field.isHot == "on")
+          {
+            data.field.isHot = "1";
+          } else {
+            data.field.isHot = "0";
+          };
+          $.ajax({
+            type:"POST",
+            url:"{:url('Api/editType')}",
+            data:data.field,
+            dataType:'json',
+            success:function (data) {
+              if (data.status==100){
+                layer.msg(data.msg, {icon: 1},function() {
+                  window.parent.location.reload();//刷新父页面
+                  parent.layer.close(index);//关闭弹出层
+                });
+              }
+              else {
+                layer.msg(data.msg, {icon: 5});
+              }
+            }
+          });
+        });
+      }
+    });
+
+  });
+
+
+</script>
+
+
+{include file="admin/footer" /}

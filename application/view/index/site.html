@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="keywords" content="{$siteInfo.simple_info},goowalk"/>
+	<link rel="shortcut icon" href="../favicon.ico"/>
+	<link rel="bookmark" href="../favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/reg.css">
+
+	<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+	<script src="/static/jquery-3.4.1.min.js"></script>
+	<script src="/static/layui/layui.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=1"/>
+	<title>{$siteInfo.simple_info}</title>
+</head>
+<link rel="stylesheet" type="text/css" href="/static/css/site.css">
+<body>
+	<div class="top">
+		<div class="logo">
+			<a href="/" title="Goowalk 国外网站导航">
+				<img src="/images/Logo.png" width="240" height="100" alt="国外网站导航">
+			</a>
+		</div>
+	</div>
+		<div class="content">
+		<div class="title">
+			<span>当前位置：</span>
+			<a href="/" class="nochecked">首页</a>>>
+			<a href="/index/type?name={$type}" class="nochecked"><h1>{$type}</h1></a>>>
+			<a href="#" class="checked">网站详情</a>
+		</div>
+		<div class="site-content">
+			<div class="site-info">
+				<div class="site-img">
+					<img src="/images/site/{$siteInfo.img}" width="100%" height="100%" alt="{$siteInfo.simple_info}" title="{$siteInfo.sitename}">
+				</div>
+				<div class="site-more">
+					<div class="ad1"></div>
+					<div class="site-name">
+						<span>网站名称：</span>
+						<h1>{$siteInfo.sitename}</h1>
+					</div>
+					<div class="site-dress">
+						<span>网址：</span>
+						<a href="{$siteInfo.adress}" target="_blank">{$siteInfo.adress}</a>
+						<div class="site-intr"><a href="{$siteInfo.adress}" target="_blank">进入官网</a></div>
+					</div>
+				</div>
+				<div class="ad2"></div>
+    	    </div>
+    	    <div class="site-info-text">
+    	    	<p>{$siteInfo.info}</p>
+				<p>所属国家：<a href="/index/state?name={$state}">{$state}</a></p>
+    	    	<p>相关类别：<a href="/index/type?name={$type}">{$type}</a></p>
+    	    </div>
+		</div>
+	</div>
+	{include file="public/footer" /}
+
+</body>
+</html>

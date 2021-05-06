@@ -1,0 +1,829 @@
+{include file="admin/head" /}
+
+
+
+<div class="Table">
+  搜索网站：
+  <div class="layui-inline">
+    <input class="layui-input" id="siteReloadText" autocomplete="off">
+  </div>
+  <button class="layui-btn" data-type="reload" id="searchSite">搜索</button>
+  <button class="layui-btn" data-type="addSite" id="addSite">新增网站</button>
+
+</div>
+
+<div class="Table" style="margin-top: 20px;">
+  <form class="layui-form layui-form-pane" action="">
+
+    <div>
+      <div class="layui-form-item layui-inline" style="width: 300px;">
+        <label class="layui-form-label">网站类型</label>
+        <div class="layui-input-block">
+          <select name="type" id="typeSearch" lay-filter="typeSearch">
+            <option value="">请选择网站所属类型</option>
+            {foreach $type as $key=>$vo }
+            <option value="{$vo.type_name}">{$vo.type_name}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-inline" style="width: 300px;">
+        <label class="layui-form-label">网站大洲</label>
+        <div class="layui-input-block">
+          <select name="areaSearch" id="areaSearch" lay-filter="areaSearch">
+            <option value="">请选择网站所属大洲</option>
+            {foreach $area as $key=>$vo }
+            <option value="{$vo.state_area}">{$vo.state_area}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-inline" style="width: 300px;">
+        <label class="layui-form-label">网站国家</label>
+        <div class="layui-input-block">
+          <select name="stateSearch" id="stateSearch" lay-filter="stateSearch">
+            <option value="">请选择网站所属国家</option>
+            {foreach $state as $key=>$vo }
+            <option value="{$vo.state_name}">{$vo.state_name}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="layui-form-item layui-inline" pane=""  style="width: 300px;">
+        <label class="layui-form-label">热门网站</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="hotSearch" lay-skin="switch" lay-text="是|否" id="hotSearch"  lay-filter="hotSearch">
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-inline" pane=""  style="width: 300px;">
+        <label class="layui-form-label">首页显示</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="indexSearch" lay-skin="switch" lay-text="是|否" id="indexSearch"  lay-filter="indexSearch">
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<table class="layui-hide" id="site" lay-filter="siteData"></table>
+
+<script type="text/html" id="addSiteForm">
+  <style>
+    .container{
+      padding: 30px;
+    }
+    /*预览图样式*/
+    .upLoadImgLogo{
+      width: 138px;
+      height: 50px;
+      border: 1px dotted #009688;
+    }
+    .upLoadImg{
+      width: 320px;
+      height: 200px;
+      border: 1px dotted #009688;
+    }
+    .upLoadImgHot{
+      width: 48px;
+      height: 48px;
+      border: 1px dotted #009688;
+    }
+  </style>
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-hide">
+      <input type="text" name="siteId" id="siteId">
+    </div>
+    <div class="container">
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="siteName" required  lay-verify="required" placeholder="请输入网站名称" autocomplete="off" class="layui-input" id="siteName">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站网址</label>
+        <div class="layui-input-block">
+          <input type="text" name="adress" required  lay-verify="required" placeholder="请输入网站网址" autocomplete="off" class="layui-input" id="adress">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站大洲</label>
+        <div class="layui-input-block">
+          <select name="area" lay-verify="required" id="area" lay-filter="area">
+            <option value="">请选择网站所属大洲</option>
+            {foreach $area as $key=>$vo }
+            <option value="{$vo.state_area}">{$vo.state_area}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站国家</label>
+        <div class="layui-input-block">
+          <select name="state" lay-verify="required" id="state">
+            <option value="">请选择网站所属国家</option>
+            {foreach $state as $key=>$vo }
+            <option value="{$vo.state_name}">{$vo.state_name}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站类型</label>
+        <div class="layui-input-block">
+          <select name="type" lay-verify="required" id="type">
+            <option value="">请选择网站所属类型</option>
+            {foreach $type as $key=>$vo }
+            <option value="{$vo.type_name}">{$vo.type_name}</option>
+            {/foreach}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item" pane="">
+        <label class="layui-form-label">热门网站</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="ishot" lay-skin="switch" lay-text="是|否" id="ishot">
+        </div>
+      </div>
+
+      <div class="layui-form-item" pane="">
+        <label class="layui-form-label">首页显示</label>
+        <div class="layui-input-block">
+          <input type="checkbox" name="isindex" lay-skin="switch" lay-text="是|否" id="isindex">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">网站简介</label>
+        <div class="layui-input-block">
+          <input type="text" name="siteSimpleInfo" required  lay-verify="required" placeholder="请输入网站简介" autocomplete="off" class="layui-input" id="siteSimpleInfo">
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">网站详情</label>
+        <div class="layui-input-block">
+          <textarea name="siteInfo" placeholder="请输入网站详细介绍" class="layui-textarea" id="siteInfo"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-row" style="border: 1px solid #d2d2d2;">
+        <div class="layui-col-md4" style="padding: 10px;">
+          <div class="layui-upload">
+            <button type="button" class="layui-btn" id="upLoadImgLogo">网站图标</button>
+            <div class="layui-upload-list">
+              <img class="upLoadImgLogo" id="imgLogo">
+            </div>
+          </div>
+          <input id="imgLogoText" name="imgLogo" class="layui-hide" value="">
+          <div class="layui-upload">
+            <button type="button" class="layui-btn" id="upLoadImgHot">热门网站图标</button>
+            <div class="layui-upload-list">
+              <img class="upLoadImgHot" id="imgHot">
+            </div>
+          </div>
+          <input id="imgHotText" name="imgHot" class="layui-hide" value="">
+        </div>
+
+        <div class="layui-upload layui-col-md8"  style="padding: 10px;">
+          <button type="button" class="layui-btn" id="upLoadImg">网站预览图</button>
+          <div class="layui-upload-list">
+            <img class="upLoadImg" id="img">
+          </div>
+        </div>
+        <input id="imgText" name="img" class="layui-hide" value="">
+      </div>
+
+
+      <div class="layui-form-item" style="margin-top: 20px;">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formUpSite" type="button" id="submit">提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</script>
+
+<script type="text/html" id="editBar">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="hot">
+  {{#  if(d.ishot === 1){ }}
+  <span style="color: #F581B1;">是</span>
+  {{#  } else { }}
+  否
+  {{#  } }}
+</script>
+
+<script type="text/html" id="index">
+  {{#  if(d.is_index === 1){ }}
+  <span style="color: #F581B1;">是</span>
+  {{#  } else { }}
+  否
+  {{#  } }}
+</script>
+
+
+<script>
+  //监听筛选表格功能按钮
+  layui.use(['form','layer','table'],function () {
+    var form = layui.form;
+    var layer = layui.layer;
+    var table = layui.table;
+
+    //监听筛选区域选择大洲下拉框--联动国家下拉框
+    form.on('select(areaSearch)', function(data){
+      //data.value 得到被选中的值
+      var selectArea = data.value;
+      $.ajax({
+        url: "{:url('Api/selectArea')}",
+        dataType: 'json',
+        type: 'post',
+        data:{select:selectArea},
+        success: function (data) {
+          //清空其他下拉框值
+          $("#stateSearch").empty();//清空下拉框的值
+          $('#stateSearch').append("<option value=''>请选择网站所属国家</option>");// 下拉菜单里添加元素
+          $("#typeSearch option[value='']").prop("selected", true);
+          $.each(data, function (index, value) {
+            $('#stateSearch').append("<option value='"+value.state_name+"'>"+value.state_name+"</option>");// 下拉菜单里添加元素
+          });
+          layui.form.render("select");//重新渲染 固定写法
+        }
+      });
+    });
+
+    //监听筛选区域选择国家下拉框
+    form.on('select(stateSearch)', function(data){
+      //表格重载
+      var selectState= data.value;
+      table.reload('siteReload', {
+        url: "{:url('Api/searchState')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:selectState
+        }
+        ,page: {
+          limit:10 //一页显示多少条
+          ,limits:[10,20,30]//每页条数的选择项
+          ,groups: 5 //连续页码
+          ,first: "首页"
+          ,last: "尾页"
+          ,prev:"上一页"
+          ,next:"下一页"
+        }
+      });
+    });
+
+    //监听筛选区域选择类型下拉框
+    form.on('select(typeSearch)', function(data){
+      //清空其他下拉框值
+      $("#stateSearch option[value='']").prop("selected", true);
+      $("#areaSearch option[value='']").prop("selected", true);
+      layui.form.render("select");
+      //表格重载
+      var selectType= data.value;
+      table.reload('siteReload', {
+        url: "{:url('Api/searchType')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:selectType
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //监听筛选区域热门网站开关
+    form.on('switch(hotSearch)', function(data){
+      //清空其他下拉框值
+      $("#stateSearch option[value='']").prop("selected", true);
+      $("#areaSearch option[value='']").prop("selected", true);
+      $("#typeSearch option[value='']").prop("selected", true);
+      layui.form.render("select");
+      //自定义开关状态传入数据
+      if(this.checked == true)
+      {
+        ishot = "1";
+      } else {
+        ishot = "0";
+      };
+      table.reload('siteReload', {
+        url: "{:url('Api/searchHot')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:ishot
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //监听筛选区域首页显示开关
+    form.on('switch(indexSearch)', function(data){
+      //清空其他下拉框值
+      $("#stateSearch option[value='']").prop("selected", true);
+      $("#areaSearch option[value='']").prop("selected", true);
+      $("#typeSearch option[value='']").prop("selected", true);
+      layui.form.render("select");
+      //自定义开关状态传入数据
+      if(this.checked == true)
+      {
+        isindex = "1";
+      } else {
+        isindex = "0";
+      };
+      table.reload('siteReload', {
+        url: "{:url('Api/searchIndex')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:isindex
+        }
+      });
+    });
+
+  });
+
+  //监听新增网站事件
+  $('#addSite').on('click', function() {
+
+    layui.use(['form','layer','upload'], function(){
+
+      var form = layui.form;
+      var layer = layui.layer;
+      var upload = layui.upload;
+
+      //打开新增网站图层
+      layer.open({
+        type: 1 //Page层类型
+        ,area: ['680px', '680px']
+        ,title: '新增网站'
+        ,shade: 0.6 //遮罩透明度
+        ,shadeClose:false
+        ,anim: 1 //0-6的动画形式，-1不开启
+        ,content: $('#addSiteForm').html()
+      });
+      form.render();
+
+      //上传图片（网站图标）
+      var upLoadImgLogo = upload.render({
+        elem: '#upLoadImgLogo'
+        ,url: "{:url('Api/addImgLogo')}" //改成您自己的上传接口
+        ,field:'imgLogo'
+        ,choose: function(obj){
+          obj.preview(function(index, file, result){
+            $('#imgLogo').attr('src', result);
+
+          });
+        }
+        ,before:function (obj) {
+          layer.load();
+        }
+        ,done: function(res){
+          layer.closeAll('loading');
+          // 如果上传失败
+          if(res.code == 0){
+            return layer.msg('上传失败');
+          }
+          // 上传成功
+          var imgLogoText = $('#imgLogoText');
+          imgLogoText.val(res.imgName);
+          layer.msg('网站图标上传成功');
+        }
+        ,error: function(){
+          layer.closeAll('loading');
+          layer.msg('上传失败');
+        }
+      });
+
+
+      //上传图片（网站预览图）
+      var upLoadImg = upload.render({
+        elem: '#upLoadImg' //绑定元素
+        ,url: "{:url('Api/addImg')}" //上传接口
+        ,field:'img'
+        ,choose: function(obj){
+          obj.preview(function(index, file, result){
+            $('#img').attr('src', result);
+
+          });
+        }
+        ,before:function (obj) {
+          layer.load();
+        }
+        ,done: function(res){
+          layer.closeAll('loading');
+          //如果上传失败
+          if(res.code == 0){
+            return layer.msg('上传失败');
+          }
+          var imgText = $('#imgText');
+          imgText.val(res.imgName);
+          layer.msg('网站预览图上传成功');
+
+          //上传成功
+        }
+        ,error: function(){
+          layer.closeAll('loading');
+          layer.msg('上传失败');
+        }
+      });
+
+
+      //上传图片（网站热门图标）
+      var upLoadImgHot = upload.render({
+        elem: '#upLoadImgHot' //绑定元素
+        ,url: "{:url('Api/addImgHot')}" //上传接口
+        ,field:'imgHot'
+        //预览
+        ,choose: function(obj){
+          obj.preview(function(index, file, result){
+            $('#imgHot').attr('src', result);
+
+          });
+        }
+        ,before:function (obj) {
+          layer.load();
+        }
+        ,done: function(res){
+          layer.closeAll('loading');
+          //如果上传失败
+          if(res.code == 0){
+            return layer.msg('上传失败');
+          }
+          //上传成功
+          var imgHotText = $('#imgHotText');
+          imgHotText.val(res.imgName);
+          layer.msg('网站图标上传成功');
+        }
+        ,error: function(){
+          layer.closeAll('loading');
+          layer.msg('上传失败');
+        }
+      });
+
+      //监听选择大洲下拉框
+      form.on('select(area)', function(data){
+        //data.value 得到被选中的值
+        var selectArea = data.value;
+
+        $.ajax({
+          url: "{:url('Api/selectArea')}",
+          dataType: 'json',
+          type: 'post',
+          data:{select:selectArea},
+          success: function (data) {
+            $("#state").empty();//清空下拉框的值
+            $.each(data, function (index, value) {
+              $('#state').append("<option value='"+value.state_name+"'>"+value.state_name+"</option>");// 下拉菜单里添加元素
+            });
+            layui.form.render("select");//重新渲染 固定写法
+          }
+        });
+      });
+
+      //监听提交按钮
+      form.on('submit(formUpSite)', function(data){
+
+        //自定义开关状态传入数据
+        if(data.field.ishot == "on")
+        {
+          data.field.ishot = "1";
+        } else {
+          data.field.ishot = "0";
+        };
+        if(data.field.isindex == "on")
+        {
+          data.field.isindex = "1";
+        } else {
+          data.field.isindex = "0";
+        };
+
+        $.ajax({
+          type:"POST",
+          url:"{:url('Api/addSite')}",
+          data:data.field,
+          dataType:'json',
+          success:function (data) {
+            if (data.status==100){
+              layer.msg(data.msg, {icon: 1},function() {
+                window.parent.location.reload();//刷新父页面
+                parent.layer.close(index);//关闭弹出层
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          }
+        });
+      });
+
+    });
+
+  });
+
+  //表格相关操作
+  layui.use(['table','form','layer','upload'], function(){
+    var table = layui.table;
+    var form = layui.form;
+    var layer = layui.layer;
+    var upload = layui.upload;
+
+    table.render({
+      elem: '#site'
+      ,url:"{:url('Api/siteTable')}"
+      ,cols: [[
+        {field:'ID', title:'ID', sort: true}
+        ,{field:'sitename', title:'网站名称', sort: true}
+        ,{field:'state_name', title:'国家', sort: true}
+        ,{field:'type_name', title:'类型', sort: true}
+        ,{field:'adress', title:'网址', sort: true}
+        ,{field:'simple_info', title:'简介', sort: true}
+        ,{field:'ishot', title:'热门', sort: true,templet:'#hot'}
+        ,{field:'is_index', title:'首页显示', sort: true,templet:'#index'}
+        ,{fixed: 'right', title:'操作', toolbar: '#editBar'}
+      ]]
+      ,id:'siteReload'
+      ,page: {
+        limit:10 //一页显示多少条
+        ,limits:[10,20,30]//每页条数的选择项
+        ,groups: 5 //连续页码
+        ,first: "首页"
+        ,last: "尾页"
+        ,prev:"上一页"
+        ,next:"下一页"
+      }
+    });
+
+
+    //监听行工具事件
+    table.on('tool(siteData)', function(obj){
+      var site_id = obj.data.ID;
+
+      //删除行
+      if(obj.event === 'del'){
+        layer.confirm('真的删除么', function(index){
+          obj.del();
+          $.ajax({
+            type:"GET",
+            url:"{:url('Api/delSite')}",
+            data:{site_id:site_id},
+            dataType:'json',
+            success:function (data) {
+              layer.msg('删除成功');
+            }
+          });
+          layer.close(index);
+        });
+      }
+
+
+      //编辑行
+      else if(obj.event === 'edit'){
+
+        //打开图层
+        layer.open({
+          type: 1 //Page层类型
+          ,area: ['680px', '520px']
+          ,title: '编辑网站信息'
+          ,shade: 0.6 //遮罩透明度
+          ,shadeClose:false
+          ,anim: 1 //0-6的动画形式，-1不开启
+          ,content: $('#addSiteForm').html()
+          ,cancel: function(index){
+            layer.close(index);
+            parent.layui.table.reload('siteData');
+          }
+        });
+
+        //输入框赋值
+        $('#siteId').attr('value',obj.data.ID);
+        $('#siteName').attr('value',obj.data.sitename);
+        $('#adress').attr('value',obj.data.adress);
+        $('#siteInfo').val(obj.data.info);
+        $('#siteSimpleInfo').attr('value',obj.data.simple_info);
+
+        //图片地址赋值
+        var imgLogoAdress = '../images/site/'+obj.data.img_logo;
+        var imgAdress = '../images/site/'+obj.data.img;
+        var imgHotAdress = '../images/hot-logo/'+obj.data.hot_img_adress;
+
+        $('#imgLogo').attr('src',imgLogoAdress);//添加图片地址
+        var imgLogoText = $('#imgLogoText');//对隐藏的图片地址文本框赋值
+        imgLogoText.val(obj.data.img_logo);
+
+        $('#img').attr('src',imgAdress);
+        var imgText = $('#imgText');
+        imgText.val(obj.data.img);
+
+        $('#imgHot').attr('src',imgHotAdress);
+        var imgHotText = $('#imgHotText');
+        imgHotText.val(obj.data.hot_img_adress);
+
+
+        //开关赋值
+        if (obj.data.ishot == 1){
+          $('#ishot').prop({'checked':true});
+        };
+        if (obj.data.is_index == 1){
+          $('#isindex').prop({'checked':true});
+        };
+
+        //下拉列表赋值
+        var state = obj.data.state_name;
+        var type = obj.data.type_name;
+        $("#type option[value='"+type+"']").prop("selected", true);
+        $("#state option[value='" + state + "']").prop("selected", true);
+        layui.form.render("select");
+        $.ajax({
+          type:"POST",
+          url:"{:url('Api/editSiteSelect')}",
+          data:{sitename:obj.data.sitename},
+          dataType:'json',
+          success:function (data) {
+            var area =data.area;
+
+            //获取国家数据库表里的大洲并赋值给下拉列表
+            $("#area option[value='"+area+"']").prop("selected", true);
+            layui.form.render("select");
+            //监听选择大洲下拉框
+            form.on('select(area)', function(data){
+              //data.value 得到被选中的值
+              var selectArea = data.value;
+              $.ajax({
+                url: "{:url('Api/selectArea')}",
+                dataType: 'json',
+                type: 'post',
+                data:{select:selectArea},
+                success: function (data) {
+                  //清空下拉框的值
+                  $("#state").empty();
+                  $.each(data, function (index, value) {
+                    // 下拉菜单里添加元素
+                    $('#state').append("<option value='"+value.state_name+"'>"+value.state_name+"</option>");
+
+                  });
+                  //重新渲染
+                  layui.form.render("select");
+                }
+              });
+            });
+          }
+        });
+        form.render();
+
+        //上传图片（网站图标）
+        var upLoadImgLogo = upload.render({
+          elem: '#upLoadImgLogo'
+          ,url: "{:url('Api/addImgLogo')}" //改成您自己的上传接口
+          ,field:'imgLogo'
+          ,choose: function(obj){
+            obj.preview(function(index, file, result){
+              $('#imgLogo').attr('src', result);
+
+            });
+          }
+          ,done: function(res){
+            // 如果上传失败
+            if(res.code == 0){
+              return layer.msg('上传失败');
+            }
+            // 上传成功
+            var imgLogoText = $('#imgLogoText');
+            imgLogoText.val(res.imgName);
+          }
+          ,error: function(){
+            layer.msg('上传失败');
+          }
+        });
+
+
+        //上传图片（网站预览图）
+        var upLoadImg = upload.render({
+          elem: '#upLoadImg' //绑定元素
+          ,url: "{:url('Api/addImg')}" //上传接口
+          ,field:'img'
+          ,choose: function(obj){
+            obj.preview(function(index, file, result){
+              $('#img').attr('src', result);
+
+            });
+          }
+          ,done: function(res){
+            //如果上传失败
+            if(res.code == 0){
+              return layer.msg('上传失败');
+            }
+            var imgText = $('#imgText');
+            imgText.val(res.imgName);
+            //上传成功
+          }
+          ,error: function(){
+            layer.msg('上传失败');
+          }
+        });
+
+
+        //上传图片（网站热门图标）
+        var upLoadImgHot = upload.render({
+          elem: '#upLoadImgHot' //绑定元素
+          ,url: "{:url('Api/addImgHot')}" //上传接口
+          ,field:'imgHot'
+          //预览
+          ,choose: function(obj){
+            obj.preview(function(index, file, result){
+              $('#imgHot').attr('src', result);
+
+            });
+          }
+          ,done: function(res){
+            //如果上传失败
+            if(res.code == 0){
+              return layer.msg('上传失败');
+            }
+            //上传成功
+            var imgHotText = $('#imgHotText');
+            imgHotText.val(res.imgName);
+          }
+          ,error: function(){
+            layer.msg('上传失败');
+          }
+        });
+
+        //提交数据
+        form.on('submit(formUpSite)', function(data){
+
+          //自定义开关状态传入数据
+          if(data.field.ishot == "on")
+          {
+            data.field.ishot = "1";
+          } else {
+            data.field.ishot = "0";
+          };
+          if(data.field.isindex == "on")
+          {
+            data.field.isindex = "1";
+          } else {
+            data.field.isindex = "0";
+          };
+
+          $.ajax({
+            type:"POST",
+            url:"{:url('Api/editSite')}",
+            data:data.field,
+            dataType:'json',
+            success:function (data) {
+              if (data.status==100){
+                layer.msg(data.msg, {icon: 1},function() {
+                  window.parent.location.reload();//刷新父页面
+                  parent.layer.close(index);//关闭弹出层
+                });
+              }
+              else {
+                layer.msg(data.msg, {icon: 5});
+              }
+            }
+          });
+        });
+      }
+    });
+
+
+    //监听搜索框事件
+
+    $('#searchSite').on('click', function(){
+      var siteReloadText = $('#siteReloadText').val();
+      table.reload('siteReload', {
+        url: "{:url('Api/searchSite')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:siteReloadText
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+
+    });
+
+
+  });
+
+</script>
+
+
+{include file="admin/footer" /}

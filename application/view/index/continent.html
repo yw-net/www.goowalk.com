@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Goowalk,国外网址大全,国外网站分类导航,国外网站,外国网址全收录"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="bookmark" href="/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/content.css">
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=1"/>
+    <title>Goowalk 国外网站大全</title>
+</head>
+<body>
+<div class="top">
+    <div class="logo">
+        <a href="/" title="Goowalk 国外网站导航">
+            <img src="/images/Logo.png" width="240" height="100" alt="国外网站导航">
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="title"><span>当前位置：</span><a href="/" class="nochecked">首页</a>><a href="#" class="checked">全部国家</a></div>
+    <div class="list-content">
+        <fieldset class="layui-elem-field">
+            <legend>北美洲</legend>
+            <div class="layui-field-box">
+                {foreach $beimei as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>欧洲</legend>
+            <div class="layui-field-box">
+                {foreach $ouzhou as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>亚洲</legend>
+            <div class="layui-field-box">
+                {foreach $yazhou as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>大洋洲</legend>
+            <div class="layui-field-box">
+                {foreach $dayang as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>非洲</legend>
+            <div class="layui-field-box">
+                {foreach $feizhou as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field">
+            <legend>南美洲</legend>
+            <div class="layui-field-box">
+                {foreach $nanmei as $key=>$vo }
+                <div class="list" align="center" style="display: block">
+                    <a href="/index/state?name={$vo.state_name}" target="_blank">
+                        <img src="/images/prefix/{$vo.state_name}.png"/>{$vo.state_name}</a>
+                </div>
+                {/foreach}
+            </div>
+        </fieldset>
+    </div>
+</div>
+<footer>Gootwalk 国外网站导航© 2018-2019</footer>
+</body>

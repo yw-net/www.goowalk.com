@@ -1,0 +1,70 @@
+{include file="public/head" /}
+
+<style>
+  h1{
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .content{
+    width: 600px;
+    margin: 0 auto;
+  }
+</style>
+
+<body>
+<div class="layui-container">
+  <div>
+    <h1>网站导航后台管理系统</h1>
+  </div>
+  <div class="content">
+    <form class="layui-form" action="" style="margin-top: 40px;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+          <input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+          <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="Login" type="button">登录</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  //Demo
+  layui.use(['form','layer'], function(){
+    var form = layui.form;
+    var layer =layui.layer;
+
+    //监听提交
+    form.on('submit(Login)', function(data){
+      $.ajax({
+        type:"POST",
+        url:"{:url('Api/login')}",
+        data:data.field,
+        dataType:'json',
+        success:function (data) {
+          if (data.code=='0'){
+            layer.msg('用户名密码错误');
+          }
+          if (data.code=='1'){
+            layer.msg('验证成功');
+            window.location.href="{:url('Admin/upstate')}";
+          }
+        }
+      });
+    });
+  });
+</script>
+</body>

@@ -1,0 +1,191 @@
+{include file="public/head" /}
+<body>
+	<div class="top">
+		<div class="logo">
+			<a href="/" title="Goowalk 国外网站大全">
+				<img src="/images/Logo.png" width="240" height="100" alt="国外网站大全">
+			</a>
+		</div>
+		<div class="search-form">
+			<input type="text" name="site" size="40" class="search-text" placeholder="请输入网站......" id="inputSearch" lay-verify="required">
+			<div>
+				<button type="button" id="search" class="search">站内搜索</button>
+			</div>
+		</div>
+	</div>
+	<div class="layui-container">
+
+		<div class="layui-row hot-top">
+			<div class="hot-title">热门推荐</div>
+			<div class="hot-list-content">
+				{foreach $hotSite as $key=>$vo }
+				<div class="hot-list" align="center">
+					<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.sitename}网址分享">
+					<img src="/images/hot-logo/{$vo.hot_img_adress}">{$vo.sitename}
+					</a>
+				</div>
+				{/foreach}
+			</div>
+		</div>
+
+
+		<div class="layui-row main layui-col-space10">
+			<div class="layui-col-md3 hot-left">
+
+				<div class="hot-left-title">
+					<span>热门地区</span>
+					<a href="/index/continent"><span class="hot-left-title-more">更多>></span></a>
+				</div>
+				<div class="hot-left-list">
+					{foreach $hotState as $key=>$vo }
+					<div class="hot-left-list-content" align="center">
+						<a href="/index/state?name={$vo.state_name}" target="_blank" title="{$vo.state_name}网址大全">
+							{$vo.state_name}
+						</a>
+					</div>
+					{/foreach}
+				</div>
+
+
+
+				<div class="hot-left-title">
+					<span>热门类别</span>
+					<a href="/index/alltype"><span class="hot-left-title-more">更多>></span></a>
+				</div>
+				<div class="hot-left-list">
+					{foreach $hotType as $key=>$vo }
+					<div class="hot-left-list-content" align="center">
+						<a href="/index/type?name={$vo.type_name}" target="_blank" title="{$vo.type_name}类网址大全">
+							{$vo.type_name}
+						</a>
+					</div>
+					{/foreach}
+				</div>
+
+
+			</div>
+
+			<div class="layui-col-md9 hot-right">
+
+				<div class="hot-right-title">名站导航</div>
+
+				<div style="background-color: #D9F4C6;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=新闻" class="clas" target="_blank" title="国外新闻类网站导航">新闻</a>
+					</div>
+					{foreach $isIndexNew as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #dbf1fb;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=搜索" class="clas" target="_blank" title="国外搜索类网站导航">搜索</a>
+					</div>
+					{foreach $isIndexSearch as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #D9F4C6;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=影视" class="clas" target="_blank" title="国外影视类网站导航">影视</a>
+					</div>
+					{foreach $isIndexYinshi as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #dbf1fb;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=社交" class="clas" target="_blank" title="国外社交类网站导航">社交</a>
+					</div>
+					{foreach $isIndexShejiao as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #D9F4C6;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=军事" class="clas" target="_blank" title="国外军事类网站导航">军事</a>
+					</div>
+					{foreach $isIndexJunshi as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #dbf1fb;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=娱乐" class="clas" target="_blank" title="国外娱乐类网站导航">娱乐</a>
+					</div>
+					{foreach $isIndexYule as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+				<div style="background-color: #D9F4C6;padding: 10px 0;" class="layui-row">
+					<div class="layui-col-md2">
+						<a href="/index/type?name=旅游资讯" class="clas" target="_blank" title="国外旅游类网站导航">旅游</a>
+					</div>
+					{foreach $isIndexLvyou as $key=>$vo }
+					<div class="hot-right-list-content layui-col-md2 layui-col-xs4" align="center">
+						<a href="/index/site?name={$vo.sitename}" target="_blank" title="{$vo.simple_info}">
+							<img src="/images/site/{$vo.img_logo}" alt="" class="hot-right-img">
+							<span class="tooltiptext">{$vo.sitename}</span>
+						</a>
+					</div>
+					{/foreach}
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+	{include file="public/footer" /}
+
+	<script>
+		//监听搜索按钮
+		$('#search').on('click', function() {
+			var search = $('#inputSearch').val();
+			if(search==''){
+				layui.use('layer', function(){
+					var layer = layui.layer;
+
+					layer.msg('请输入搜索关键词');
+				});
+			}else {
+				window.location.href='/index/search?search='+search;
+			}
+
+		});
+	</script>
+
+</body>
+</html>

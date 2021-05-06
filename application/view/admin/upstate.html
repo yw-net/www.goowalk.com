@@ -1,0 +1,333 @@
+{include file="admin/head" /}
+
+
+<div class="demoTable">
+  搜索国家：
+  <div class="layui-inline">
+    <input class="layui-input" name="searchStateText" id="searchStateText" autocomplete="off">
+  </div>
+  <button class="layui-btn" data-type="reload" id="searchState">搜索</button>
+  <button class="layui-btn" data-type="addState" id="addState">新增国家</button>
+</div>
+
+<div class="Table" style="margin-top: 20px;">
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item layui-inline" style="width: 300px;">
+      <label class="layui-form-label">所属大洲：</label>
+      <div class="layui-input-block">
+        <select name="areaSelect" id="areaSelect" lay-filter="areaSelect">
+          <option value="">请选择一个大洲</option>
+          <option value="亚洲">亚洲</option>
+          <option value="非洲">非洲</option>
+          <option value="欧洲">欧洲</option>
+          <option value="北美洲">北美洲</option>
+          <option value="南美洲">南美洲</option>
+          <option value="大洋洲">大洋洲</option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item layui-inline" pane=""  style="width: 300px;">
+      <label class="layui-form-label">热门国家</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="hotSearch" lay-skin="switch" lay-text="是|否" id="hotSearch"  lay-filter="hotSearch">
+      </div>
+    </div>
+  </form>
+</div>
+
+<table class="layui-hide" id="state" lay-filter="stateData"></table>
+
+<script type="text/html" id="addStateForm">
+  <form class="layui-form layui-form-pane" action="" >
+    <div class="layui-hide">
+      <input type="text" name="stateId" id="stateId">
+    </div>
+    <div class="layui-form-item" pane>
+      <label class="layui-form-label">所属大洲：</label>
+      <div class="layui-input-block">
+        <select name="area" lay-verify="required" id="area">
+          <option value="">请选择一个大洲</option>
+          <option value="亚洲">亚洲</option>
+          <option value="非洲">非洲</option>
+          <option value="欧洲">欧洲</option>
+          <option value="北美洲">北美洲</option>
+          <option value="南美洲">南美洲</option>
+          <option value="大洋洲">大洋洲</option>
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item" >
+      <label class="layui-form-label">国家名称：</label>
+      <div class="layui-input-block">
+        <input type="text" name="state" required  lay-verify="required" placeholder="请输入您要添加的国家名称" autocomplete="off" class="layui-input" id="stateName">
+      </div>
+    </div>
+    <div class="layui-form-item"  pane="">
+      <label class="layui-form-label">热门国家:</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="isHot" lay-skin="switch" lay-text="是|否" id="isHot">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formUpState" id="submit" type="button">提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+  </form>
+</script>
+
+<script type="text/html" id="editBar">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="hot">
+  {{#  if(d.ishot === 1){ }}
+  <span style="color: #F581B1;">是</span>
+  {{#  } else { }}
+  否
+  {{#  } }}
+</script>
+
+<script>
+
+  //监听新增国家事件
+  $('#addState').on('click', function() {
+    layui.use(['form','layer'], function(){
+      var form = layui.form;
+      var layer = layui.layer;
+
+
+      layer.open({
+        type: 1 //Page层类型
+        ,area: ['680px', '520px']
+        ,title: '新增国家'
+        ,shade: 0.6 //遮罩透明度
+        ,shadeClose:false
+        ,anim: 1 //0-6的动画形式，-1不开启
+        ,content: $('#addStateForm').html()
+      });
+      form.render();
+
+      form.on('submit(formUpState)', function(data){
+        //自定义开关状态传入数据
+        if(data.field.isHot == "on")
+        {
+          data.field.isHot = "1";
+        } else {
+          data.field.isHot = "0";
+        };
+        $.ajax({
+          type:"POST",
+          url:"{:url('Api/addState')}",
+          data:data.field,
+          dataType:'json',
+          success:function (data) {
+            console.log(data);
+            if (data.status==100){
+              layer.msg(data.msg, {icon: 1},function() {
+                window.parent.location.reload();//刷新父页面
+                parent.layer.close(index);//关闭弹出层
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          }
+        });
+      });
+
+    });
+
+  });
+
+  //筛选国区域
+
+
+  //表格
+  layui.use(['table','form'], function(){
+    var table = layui.table;
+    var form = layui.form;
+
+    //监听搜索框事件
+    $('#searchState').on('click', function(){
+      var searchStateText = $('#searchStateText').val();
+      table.reload('stateReload', {
+        url: "{:url('Api/searchStateText')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:searchStateText
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //监听筛选区域热门国家开关
+    form.on('switch(hotSearch)', function(data){
+      //清空其他下拉框值
+      $("#areaSelect option[value='']").prop("selected", true);
+      layui.form.render("select");
+      //自定义开关状态传入数据
+      if(this.checked == true)
+      {
+        ishot = "1";
+      } else {
+        ishot = "0";
+      };
+      table.reload('stateReload', {
+        url: "{:url('Api/searchStateHot')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:ishot
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //监听筛选区域所属大洲下拉框
+    form.on('select(areaSelect)', function(data){
+      //表格重载
+      var selectArea= data.value;
+      table.reload('stateReload', {
+        url: "{:url('Api/searchAreaSelect')}"
+        ,where: { //设定异步数据接口的额外参数
+          data:selectArea
+        }
+        ,page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    //渲染表格
+    table.render({
+      elem: '#state'
+      ,url:"{:url('Api/stateTable')}"
+      ,cols: [[
+        {field:'state_id', title:'ID', sort: true}
+        ,{field:'state_area', title:'所属大洲', sort: true,Width:200}
+        ,{field:'state_name', title:'国家', sort: true}
+        ,{field:'ishot', title:'热门', sort: true,templet:'#hot'}
+        ,{fixed: 'right', title:'操作', toolbar: '#editBar'}
+      ]]
+      ,id:'stateReload'
+      ,page: {
+        limit:10 //一页显示多少条
+        ,limits:[10,20,30]//每页条数的选择项
+        ,groups: 5 //连续页码
+        ,first: "首页"
+        ,last: "尾页"
+        ,prev:"上一页"
+        ,next:"下一页"
+      }
+    });
+
+    //编辑|删除
+    table.on('tool(stateData)', function(obj){
+      console.log(obj.data)
+      var state_id = obj.data.state_id;
+
+      //删除
+      if(obj.event === 'del'){
+        layer.confirm('真的删除么', function(index){
+          obj.del();
+          $.ajax({
+            type:"GET",
+            url:"{:url('Api/delState')}",
+            data:{state_id:state_id},
+            dataType:'json',
+            success:function (data) {
+              layer.msg('删除成功');
+            }
+          });
+          layer.close(index);
+        });
+      }
+
+      //编辑
+      else if(obj.event === 'edit'){
+        //打开图层
+        layer.open({
+          type: 1 //Page层类型
+          ,area: ['680px', '520px']
+          ,title: '编辑国家信息'
+          ,shade: 0.6 //遮罩透明度
+          ,shadeClose:false
+          ,anim: 1 //0-6的动画形式，-1不开启
+          ,content: $('#addStateForm').html()
+          ,cancel: function(index){
+            layer.close(index);
+            parent.layui.table.reload('stateData');
+          }
+        });
+
+        //隐藏输入框赋值
+        $('#stateId').attr('value',obj.data.state_id);
+
+        //输入框赋值
+        $('#stateName').attr('value',obj.data.state_name);
+
+        //开关赋值
+        if (obj.data.ishot == 1){
+          $('#isHot').prop({'checked':true});
+        }
+
+        //下拉列表赋值
+        switch (obj.data.state_area) {
+          case '': $("#area option[value='']").prop("selected", true);break;
+          case '非洲': $("#area option[value='非洲']").prop("selected", true);break;
+          case '欧洲': $("#area option[value='欧洲']").prop("selected", true);break;
+          case '亚洲': $("#area option[value='亚洲']").prop("selected", true);break;
+          case '北美洲': $("#area option[value='北美洲']").prop("selected", true);break;
+          case '南美洲': $("#area option[value='南美洲']").prop("selected", true);break;
+          case '大洋洲': $("#area option[value='大洋洲']").prop("selected", true);break;
+
+        };
+
+        //渲染页面
+        form.render();
+
+        //提交数据
+        form.on('submit(formUpState)', function(data){
+          //自定义开关状态传入数据
+          if(data.field.isHot == "on")
+          {
+            data.field.isHot = "1";
+          } else {
+            data.field.isHot = "0";
+          };
+          $.ajax({
+            type:"POST",
+            url:"{:url('Api/editState')}",
+            data:data.field,
+            dataType:'json',
+            success:function (data) {
+              if (data.status==100){
+                layer.msg(data.msg, {icon: 1},function() {
+                  window.parent.location.reload();//刷新父页面
+                  parent.layer.close(index);//关闭弹出层
+                });
+              }
+              else {
+                layer.msg(data.msg, {icon: 5});
+              }
+            }
+          });
+        });
+      }
+    });
+
+  });
+
+</script>
+
+
+
+
+
+{include file="admin/footer" /}
+
+
